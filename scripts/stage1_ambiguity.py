@@ -55,6 +55,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--ids", type=int, nargs="+", default=[100])
     ap.add_argument("--trials", type=int, default=20)
+    ap.add_argument("--seed-start", type=int, default=0)
     ap.add_argument("--states", type=int, nargs="+", default=[1, 2, 4, 99])
     ap.add_argument("--coverage", type=float, nargs="+", default=[1.0, 0.5])
     ap.add_argument("--errors", type=int, default=1)
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     TASKS.mkdir(parents=True, exist_ok=True)
     survey = pd.read_csv("results/network_survey.csv").set_index("id")
     jobs = [(nid, survey.loc[nid, "folder"], s, c, seed, args.errors)
-            for nid in args.ids for s in args.states for c in args.coverage for seed in range(args.trials)]
+            for nid in args.ids for s in args.states for c in args.coverage for seed in range(args.seed_start, args.seed_start + args.trials)]
     rows, t0 = [], time.time()
     with ProcessPoolExecutor(args.workers) as ex:
         futs = [ex.submit(run_trial, *j) for j in jobs]

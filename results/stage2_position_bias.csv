@@ -1,0 +1,7 @@
+method,answered_option_1,mean_k,expected_if_no_bias
+gemini:gemini-3.8-flash|anonymous,0.434,4.376,0.351
+gemini:gemini-3.8-flash|named,0.367,4.376,0.351
+gemini:gemini-3.8-flash|shuffled,0.403,4.376,0.351
+local:mlx-community/Qwen3-8B-4bit|anonymous,0.107,4.31,0.352
+local:mlx-community/Qwen3-8B-4bit|named,0.329,4.31,0.352
+local:mlx-community/Qwen3-8B-4bit|shuffled,0.286,4.31,0.352

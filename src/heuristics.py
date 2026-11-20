@@ -31,3 +31,21 @@ def closest(task, seed):
     """Smallest change of behaviour relative to the corrupted (starting) model."""
     diff, bad = _differing(task), task["corrupted"]
     return _pick_min(task, lambda c: sum(bnet.table_distance(c[t], bad[t]) for t in diff), seed)
+
+
+def richest(task, seed):
+    """Most literals in the disputed rules: the opposite of `simplest`."""
+    diff = _differing(task)
+    return _pick_min(task, lambda c: -sum(_literals(c[t], t) for t in diff), seed)
+
+
+def keep_regulation(task, seed):
+    """Avoid turning a node into a free input, then keep as many of the starting model's regulators
+    as possible. Encodes the prior "published models rarely drop a regulation"."""
+    diff, bad = _differing(task), task["corrupted"]
+
+    def score(c):
+        dropped = sum(c[t] == t for t in diff)
+        lost = sum(len(set(bnet.regulators(bad[t])) - set(bnet.regulators(c[t]))) for t in diff)
+        return (dropped, lost)
+    return _pick_min(task, score, seed)

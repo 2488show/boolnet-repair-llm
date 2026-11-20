@@ -1,0 +1,45 @@
+method,versus,tasks,difference,lo,hi
+gemini:gemini-3.8-flash|anonymous,gemini:gemini-3.8-flash|shuffled,412,0.124,0.068,0.182
+gemini:gemini-3.8-flash|anonymous,keep_regulation,412,0.039,-0.024,0.104
+gemini:gemini-3.8-flash|anonymous,richest,412,0.143,0.083,0.204
+gemini:gemini-3.8-flash|anonymous,simplest,412,0.308,0.25,0.371
+gemini:gemini-3.8-flash|anonymous,closest,412,0.391,0.335,0.444
+gemini:gemini-3.8-flash|anonymous,solver_first,412,0.209,0.143,0.269
+gemini:gemini-3.8-flash|anonymous,random (expected),412,0.175,0.13,0.219
+gemini:gemini-3.8-flash|named,gemini:gemini-3.8-flash|anonymous,412,0.313,0.267,0.362
+gemini:gemini-3.8-flash|named,gemini:gemini-3.8-flash|shuffled,412,0.437,0.381,0.49
+gemini:gemini-3.8-flash|named,keep_regulation,412,0.352,0.291,0.405
+gemini:gemini-3.8-flash|named,richest,412,0.456,0.4,0.512
+gemini:gemini-3.8-flash|named,simplest,412,0.621,0.568,0.675
+gemini:gemini-3.8-flash|named,closest,412,0.704,0.658,0.75
+gemini:gemini-3.8-flash|named,solver_first,412,0.522,0.464,0.575
+gemini:gemini-3.8-flash|named,random (expected),412,0.488,0.453,0.522
+gemini:gemini-3.8-flash|shuffled,gemini:gemini-3.8-flash|anonymous,412,-0.124,-0.182,-0.068
+gemini:gemini-3.8-flash|shuffled,keep_regulation,412,-0.085,-0.155,-0.017
+gemini:gemini-3.8-flash|shuffled,richest,412,0.019,-0.044,0.08
+gemini:gemini-3.8-flash|shuffled,simplest,412,0.184,0.131,0.245
+gemini:gemini-3.8-flash|shuffled,closest,412,0.267,0.214,0.32
+gemini:gemini-3.8-flash|shuffled,solver_first,412,0.085,0.024,0.148
+gemini:gemini-3.8-flash|shuffled,random (expected),412,0.051,0.008,0.096
+local:mlx-community/Qwen3-8B-4bit|anonymous,local:mlx-community/Qwen3-8B-4bit|shuffled,252,-0.063,-0.139,0.008
+local:mlx-community/Qwen3-8B-4bit|anonymous,keep_regulation,252,-0.044,-0.127,0.036
+local:mlx-community/Qwen3-8B-4bit|anonymous,richest,252,0.04,-0.04,0.119
+local:mlx-community/Qwen3-8B-4bit|anonymous,simplest,252,0.194,0.127,0.266
+local:mlx-community/Qwen3-8B-4bit|anonymous,closest,252,0.298,0.226,0.365
+local:mlx-community/Qwen3-8B-4bit|anonymous,solver_first,252,0.135,0.052,0.222
+local:mlx-community/Qwen3-8B-4bit|anonymous,random (expected),252,0.077,0.019,0.132
+local:mlx-community/Qwen3-8B-4bit|named,local:mlx-community/Qwen3-8B-4bit|anonymous,252,0.103,0.036,0.171
+local:mlx-community/Qwen3-8B-4bit|named,local:mlx-community/Qwen3-8B-4bit|shuffled,252,0.04,-0.04,0.111
+local:mlx-community/Qwen3-8B-4bit|named,keep_regulation,252,0.06,-0.028,0.143
+local:mlx-community/Qwen3-8B-4bit|named,richest,252,0.143,0.059,0.226
+local:mlx-community/Qwen3-8B-4bit|named,simplest,252,0.298,0.222,0.377
+local:mlx-community/Qwen3-8B-4bit|named,closest,252,0.401,0.325,0.48
+local:mlx-community/Qwen3-8B-4bit|named,solver_first,252,0.238,0.147,0.325
+local:mlx-community/Qwen3-8B-4bit|named,random (expected),252,0.18,0.122,0.237
+local:mlx-community/Qwen3-8B-4bit|shuffled,local:mlx-community/Qwen3-8B-4bit|anonymous,252,0.063,-0.008,0.135
+local:mlx-community/Qwen3-8B-4bit|shuffled,keep_regulation,252,0.02,-0.056,0.095
+local:mlx-community/Qwen3-8B-4bit|shuffled,richest,252,0.103,0.024,0.183
+local:mlx-community/Qwen3-8B-4bit|shuffled,simplest,252,0.258,0.179,0.333
+local:mlx-community/Qwen3-8B-4bit|shuffled,closest,252,0.361,0.294,0.433
+local:mlx-community/Qwen3-8B-4bit|shuffled,solver_first,252,0.198,0.123,0.274
+local:mlx-community/Qwen3-8B-4bit|shuffled,random (expected),252,0.14,0.085,0.195

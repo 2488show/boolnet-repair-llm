@@ -85,7 +85,8 @@ if __name__ == "__main__":
 
     # baselines without AI: instant
     for t in tasks:
-        for name, fn in [("simplest", heuristics.simplest), ("closest", heuristics.closest)]:
+        for name, fn in [("simplest", heuristics.simplest), ("closest", heuristics.closest),
+                         ("richest", heuristics.richest), ("keep_regulation", heuristics.keep_regulation)]:
             if (t["task_id"], name) not in done:
                 i = fn(t, seed=t["task_id"])
                 record({**base_row(t, name), "choice": i, "correct": t["correct"][i]})
