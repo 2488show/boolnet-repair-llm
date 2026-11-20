@@ -11,6 +11,7 @@ import tempfile
 
 import bnet
 
+MAX_MODELS = 200  # more raw repairs than this: recorded as too many, not enumerated
 PYMODREV = str(pathlib.Path(__file__).resolve().parents[1] / ".venv" / "bin" / "pymodrev")
 
 
@@ -99,7 +100,36 @@ def solve(net, obs, names, timeout=120):
         files = sorted(tmp.glob("model_*.bnet"))
         if not files:
             return [], "no_repair:" + (r.stdout + r.stderr)[-200:].replace("\n", " ")
-        return [bnet.read_bnet(f) for f in files], "ok"
+        if len(files) > MAX_MODELS:
+            return [], f"too_many:{len(files)}"
+        cands = []
+        for f in files:
+            c = bnet.read_bnet(f)
+            # a node without a rule was turned into a free input by an edge removal: keep its value
+            cands.append({t: c.get(t, t) for t in net})
+        return dedupe(cands), "ok"
+
+
+def canonical(expr):
+    """Key that is equal for two expressions exactly when they are the same Boolean function."""
+    sg = bnet.signs(expr)
+    regs = [r for r, s in sg.items() if s != 0]  # variables with no effect are dropped ...
+    idle = {r: False for r, s in sg.items() if s == 0}  # ... and held at any fixed value
+    rows = []
+    for bits in __import__("itertools").product([False, True], repeat=len(regs)):
+        rows.append(bool(bnet.evaluate(expr, {**idle, **dict(zip(regs, bits))})))
+    return tuple(regs), tuple(rows)
+
+
+def dedupe(cands):
+    """pyModRev can return the same Boolean function written in different ways; keep one of each."""
+    seen, out = set(), []
+    for c in cands:
+        key = tuple((t, canonical(c[t])) for t in sorted(c))
+        if key not in seen:
+            seen.add(key)
+            out.append(c)
+    return out
 
 
 # ---------- scoring ----------

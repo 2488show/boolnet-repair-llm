@@ -50,13 +50,17 @@ def _gemini(model, prompt, temperature, max_tokens, json_mode):
 
 
 def _local(model, prompt, temperature, max_tokens, json_mode):
+    if "qwen3" in model.lower():
+        prompt += " /no_think"  # Qwen3 thinking would make an 8B model on a laptop far too slow
     body = {"model": model, "messages": [{"role": "user", "content": prompt}],
             "temperature": temperature, "max_tokens": max_tokens}
     r = requests.post(LOCAL_URL, json=body, timeout=600)
     r.raise_for_status()
     d = r.json()
     u = d.get("usage", {})
-    return d["choices"][0]["message"]["content"], u.get("prompt_tokens", 0), u.get("completion_tokens", 0)
+    text = d["choices"][0]["message"]["content"]
+    text = text.split("</think>")[-1]  # drop an (empty) thinking block if the model emits one
+    return text, u.get("prompt_tokens", 0), u.get("completion_tokens", 0)
 
 
 def ask(spec: str, prompt: str, temperature: float = 0.0, max_tokens: int = 2048,
