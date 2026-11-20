@@ -19,7 +19,7 @@ repairs of which one is the true network:
 | **Gemini 3.8 Flash, real gene names** | **0.84** | 0.80–0.87 |
 | Gemini 3.8 Flash, names replaced by g1, g2, … | 0.53 | 0.48–0.58 |
 | Gemini 3.8 Flash, real names shuffled between nodes | 0.40 | 0.36–0.45 |
-| Qwen3-8B on a laptop, real names | LOCAL_NAMED | LOCAL_NAMED_CI |
+| Qwen3-8B on a laptop, real names | 0.52 | 0.47–0.57 |
 | Best rule without AI ("keep the starting model's regulators") | 0.49 | 0.44–0.54 |
 | Random pick (expected) | 0.35 | 0.34–0.37 |
 
@@ -30,7 +30,10 @@ repairs of which one is the true network:
   wrong way, puts Gemini *below* the anonymous condition (−0.12, CI −0.18 to −0.07).
 - **The result is not one network.** Gemini with real names matches or beats the best
   knowledge-free rule on 14 of 15 networks (`results/stage2_by_network.csv`).
-- **A small local model gets little of this.** LOCAL_SENTENCE
+- **A small local model gets little of this.** Qwen3-8B with real names (0.52) is no better than the
+  best knowledge-free rule (+0.03, CI −0.03 to 0.10) and only a little better than with anonymous names
+  (+0.07, CI 0.01–0.12); shuffling the names barely changes it. The solver supplies the guarantee that
+  every option fits the data, but the biological judgement has to come from a strong model.
 - Total Gemini API cost: **$7.47** for 1,344 calls, pilots included (0.66 M input, 1.86 M output tokens, most of it the model's thinking).
 
 ![Stage 2 result](figures/stage2_core.png)
@@ -124,8 +127,8 @@ echo "GEMINI_API_KEY=..." > .env             # never committed
 .venv/bin/python scripts/analyze.py
 ```
 
-Every model call (prompt, reply, token counts) is logged locally to `runs/llm_log.jsonl`;
-`runs/stage2_results.jsonl` holds one line per task and chooser.
+Every model call (prompt, reply, token counts) is logged locally to `runs/llm_log.jsonl`.
+`results/stage2_results.jsonl` holds one line per task and chooser, with the model's reply.
 
 ## Layout
 

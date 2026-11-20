@@ -1,13 +1,13 @@
 method,tasks,accuracy,lo,hi,unparsed
 gemini:gemini-3.8-flash|named,412,0.84,0.803,0.874,0.0
-local:mlx-community/Qwen3-8B-4bit|named,252,0.532,0.472,0.591,0.0
 gemini:gemini-3.8-flash|anonymous,412,0.527,0.481,0.575,0.007
-local:mlx-community/Qwen3-8B-4bit|shuffled,252,0.492,0.429,0.556,0.0
+local:mlx-community/Qwen3-8B-4bit|named,412,0.522,0.473,0.57,0.0
 keep_regulation,412,0.488,0.439,0.536,0.0
-local:mlx-community/Qwen3-8B-4bit|anonymous,252,0.429,0.369,0.488,0.0
+local:mlx-community/Qwen3-8B-4bit|shuffled,412,0.476,0.43,0.524,0.0
+local:mlx-community/Qwen3-8B-4bit|anonymous,412,0.456,0.41,0.505,0.0
 gemini:gemini-3.8-flash|shuffled,412,0.403,0.357,0.451,0.002
-richest,412,0.383,0.34,0.432,0.0
-random (expected),412,0.351,0.336,0.367,0.0
-solver_first,412,0.318,0.274,0.362,0.0
+richest,412,0.383,0.337,0.427,0.0
+random (expected),412,0.351,0.336,0.366,0.0
+solver_first,412,0.318,0.274,0.364,0.0
 simplest,412,0.218,0.182,0.257,0.0
 closest,412,0.136,0.102,0.17,0.0
