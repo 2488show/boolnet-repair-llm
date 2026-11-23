@@ -7,3 +7,6 @@ vendor/
 data/
 runs/
 .hf-cache/
+p5-vcc-null-audit/
+p6-stack-repro/
+_bundles/

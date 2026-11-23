@@ -24,12 +24,13 @@ import bnet  # noqa: E402
 TASKS = pathlib.Path("data/tasks")
 
 
-def run_trial(nid, folder, n_states, cov, seed, n_errors):
+def run_trial(nid, folder, n_states, cov, seed, n_errors, kinds=("flip", "and_or"), tasks_dir="data/tasks"):
     truth = bnet.read_bnet(f"vendor/bbm/models/{folder}/model.bnet")
     names = bnet.variables(truth)
     fps = bnet.fixed_points(truth)
-    rng = random.Random(f"{nid}-{n_states}-{cov}-{seed}")
-    bad, log = B.corrupt(truth, rng, n_errors)
+    tag = "" if tuple(kinds) == ("flip", "and_or") else "-" + "+".join(kinds)
+    rng = random.Random(f"{nid}-{n_states}-{cov}-{seed}{tag}")
+    bad, log = B.corrupt(truth, rng, n_errors, kinds)
     obs, chosen = B.observe(fps, names, rng, n_states, cov)
     row = dict(network=nid, n_states=min(n_states, len(fps)), coverage=cov, seed=seed,
                corrupted=";".join(f"{t}:{k}:{d}" for t, k, d in log))
@@ -42,9 +43,9 @@ def run_trial(nid, folder, n_states, cov, seed, n_errors):
     if cands:
         ok = [B.is_truth(c, truth) for c in cands]
         row.update(truth_found=any(ok), frac_correct=sum(ok) / len(ok), solver_first_correct=ok[0])
-        task_id = f"n{nid}_s{row['n_states']}_c{int(cov * 100)}_r{seed}"
+        task_id = f"n{nid}_s{row['n_states']}_c{int(cov * 100)}_r{seed}" + ("" if not tag else "_" + "".join(k[0] + k.split("_")[-1][0] if "_" in k else k[0] for k in kinds))
         row["task_id"] = task_id
-        (TASKS / f"{task_id}.json").write_text(json.dumps(dict(
+        (pathlib.Path(tasks_dir) / f"{task_id}.json").write_text(json.dumps(dict(
             task_id=task_id, network=nid, n_states=row["n_states"], coverage=cov, seed=seed,
             corruption=log, observations=obs, observed_states=chosen, corrupted=bad,
             candidates=cands, correct=ok)))
@@ -59,13 +60,15 @@ if __name__ == "__main__":
     ap.add_argument("--states", type=int, nargs="+", default=[1, 2, 4, 99])
     ap.add_argument("--coverage", type=float, nargs="+", default=[1.0, 0.5])
     ap.add_argument("--errors", type=int, default=1)
+    ap.add_argument("--kinds", nargs="+", default=["flip", "and_or"], choices=["flip", "and_or", "del_reg", "add_reg"])
+    ap.add_argument("--tasks-dir", default="data/tasks")
     ap.add_argument("--workers", type=int, default=7)
     ap.add_argument("--out", default="results/stage1")
     args = ap.parse_args()
 
-    TASKS.mkdir(parents=True, exist_ok=True)
+    pathlib.Path(args.tasks_dir).mkdir(parents=True, exist_ok=True)
     survey = pd.read_csv("results/network_survey.csv").set_index("id")
-    jobs = [(nid, survey.loc[nid, "folder"], s, c, seed, args.errors)
+    jobs = [(nid, survey.loc[nid, "folder"], s, c, seed, args.errors, tuple(args.kinds), args.tasks_dir)
             for nid in args.ids for s in args.states for c in args.coverage for seed in range(args.seed_start, args.seed_start + args.trials)]
     rows, t0 = [], time.time()
     with ProcessPoolExecutor(args.workers) as ex:
