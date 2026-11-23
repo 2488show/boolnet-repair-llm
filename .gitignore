@@ -11,3 +11,4 @@ p5-vcc-null-audit/
 p6-stack-repro/
 _bundles/
 logs/
+.env.*

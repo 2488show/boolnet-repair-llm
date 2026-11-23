@@ -1,0 +1,19 @@
+group,model,condition,tasks,truth_among_solver_repairs,alone,alone_ci,checked,checked_ci,checked_consistent,mean_rounds
+added regulator,GPT-6-Luna (Codex CLI),anonymous,77,0.052,0.156,0.08-0.23,0.338,0.23-0.44,0.675,2.12
+added regulator,GPT-6-Luna (Codex CLI),named,77,0.052,0.325,0.22-0.43,0.442,0.34-0.56,0.74,1.95
+added regulator,DeepSeek V4.1 Flash (API),anonymous,77,0.052,0.143,0.06-0.22,0.156,0.08-0.23,1.0,1.1
+added regulator,DeepSeek V4.1 Flash (API),named,77,0.052,0.416,0.31-0.53,0.429,0.31-0.53,1.0,1.06
+added regulator,Gemini 3.8 Flash (API),anonymous,77,0.052,0.377,0.27-0.48,0.416,0.31-0.53,1.0,1.12
+added regulator,Gemini 3.8 Flash (API),named,77,0.052,0.766,0.66-0.86,0.805,0.71-0.88,0.987,1.08
+original (sign / AND-OR),GPT-6-Luna (Codex CLI),anonymous,10,1.0,0.4,0.10-0.70,0.4,0.10-0.70,0.6,2.0
+original (sign / AND-OR),GPT-6-Luna (Codex CLI),named,10,1.0,0.3,0.00-0.60,0.3,0.00-0.60,0.4,2.3
+original (sign / AND-OR),DeepSeek V4.1 Flash (API),anonymous,10,1.0,0.9,0.70-1.00,0.9,0.70-1.00,1.0,1.1
+original (sign / AND-OR),DeepSeek V4.1 Flash (API),named,10,1.0,0.8,0.50-1.00,0.8,0.50-1.00,1.0,1.0
+original (sign / AND-OR),Gemini 3.8 Flash (API),anonymous,10,1.0,0.6,0.30-0.90,0.8,0.50-1.00,1.0,1.2
+original (sign / AND-OR),Gemini 3.8 Flash (API),named,10,1.0,0.9,0.70-1.00,1.0,1.00-1.00,1.0,1.1
+removed regulator,GPT-6-Luna (Codex CLI),anonymous,25,0.2,0.0,0.00-0.00,0.0,0.00-0.00,0.44,2.28
+removed regulator,GPT-6-Luna (Codex CLI),named,25,0.2,0.04,0.00-0.12,0.12,0.00-0.24,0.68,2.16
+removed regulator,DeepSeek V4.1 Flash (API),anonymous,25,0.2,0.0,0.00-0.00,0.04,0.00-0.12,1.0,1.24
+removed regulator,DeepSeek V4.1 Flash (API),named,25,0.2,0.36,0.16-0.56,0.36,0.20-0.56,1.0,1.0
+removed regulator,Gemini 3.8 Flash (API),anonymous,25,0.2,0.04,0.00-0.12,0.04,0.00-0.12,0.88,1.76
+removed regulator,Gemini 3.8 Flash (API),named,25,0.2,0.36,0.16-0.56,0.36,0.20-0.56,0.96,1.32

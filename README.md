@@ -6,7 +6,7 @@ and the solver has no reason to prefer one. A biologist would choose using what 
 molecules involved. **This project tests whether a large language model can make that choice, and
 whether it does so because of biological knowledge or because of something else.**
 
-Status: **stages 0–2 complete, stage 3a in progress** (benchmark, solver pipeline, language-model choosers). Stage 3 (models
+Status: **stages 0–2 complete, stages 3a and 3b in progress** (benchmark, solver pipeline, language-model choosers). Stage 3 (models
 written from scratch, then repaired) is planned.
 
 ## Key results
@@ -126,6 +126,50 @@ corruptions at the same levels (`scripts/stage3a_compare.py`, `results/stage3a_c
 - Not yet done: the reason behind the 1% (which repair costs pyModRev prefers) is not analysed; one
   error per task; the Stage 2 choosers have not been run on these tasks.
 
+## Stage 3b (in progress): the language model repairs the model itself
+
+Stage 3a showed that for an **added** regulator the true network is almost never among pyModRev's minimal
+repairs, so no chooser can win. Stage 3b drops the candidate list: the model sees the corrupted network and the
+partial steady-state measurements, is told that one rule is wrong (not which one) and returns corrected rules
+(`src/repairer.py`). "Alone" scores its first answer. "Checked" lets the solver's role shrink to checking: if the
+corrected model contradicts the measurements (exact enumeration of steady states), the model is told which
+measured states fail and answers again, up to 3 answers. Names are real or anonymous, as in Stage 2.
+
+Three models, on the same 112 tasks, both name conditions (77 added-regulator, 25 removed-regulator and 10
+original Stage 2 tasks; `scripts/stage3b_run.py`, `scripts/stage3b_analyze.py`, `results/stage3b_*.csv`).
+Accuracy = the final answer reproduces the true network exactly; 95% bootstrap CIs over tasks.
+
+| Tasks | Truth among solver's minimal repairs | Gemini 3.8 Flash named / anon | DeepSeek V4.1 Flash named / anon | GPT-6-Luna named / anon |
+| --- | --- | --- | --- | --- |
+| Added regulator (77) | 0.05 | **0.81** / 0.42 | 0.43 / 0.16 | 0.44 / 0.34 |
+| Removed regulator (25) | 0.20 | 0.36 / 0.04 | 0.36 / 0.04 | 0.12 / 0.00 |
+| Original (10) | 1.00 | 1.00 / 0.80 | 0.80 / 0.90 | 0.30 / 0.40 |
+
+("Checked" accuracy. CIs, first-answer accuracy, consistency and rounds: `results/stage3b_table.csv`.)
+
+- **Language models repair what the minimal-repair principle cannot.** On added-regulator tasks, where the truth
+  is among the solver's repairs in 5% of tasks, every model with real names does better: Gemini by +0.75
+  (95% CI 0.66-0.84), DeepSeek +0.38 (0.26-0.48), GPT-6-Luna +0.39 (0.29-0.51) (`results/stage3b_paired.csv`).
+- **Biological knowledge again carries the effect, for the two API models.** Real names minus anonymous names
+  over all 112 tasks: Gemini +0.36 (0.24-0.47), DeepSeek +0.25 (0.16-0.35); GPT-6-Luna +0.09 (-0.04 to 0.22),
+  not separable from zero.
+- **Models differ a lot.** Gemini with real names beats DeepSeek by +0.28 (0.18-0.38) and GPT-6-Luna by +0.37
+  (0.25-0.48). GPT-6-Luna's corrected models often still contradicted the data after three answers (consistent
+  in 40-74% of tasks, against 88-100% for the other two), and it left the corrupted rule untouched in 36-43%.
+- Removed regulators remain hard (at most 0.36), and the 10 original tasks are too few for a conclusion.
+
+**Limits of Stage 3b (read before using these numbers).**
+- Only 112 tasks: the Gemini run stopped when the paid API credit ran out (HTTP 402); the other models were run
+  on exactly the tasks Gemini finished. The 10 original tasks are the pilot sample. One answer chain per task.
+- The models are not reached in the same way. Gemini and DeepSeek through their APIs at temperature 0 (output
+  limit 8,192 tokens for Gemini, 32,768 for DeepSeek because its reasoning counts against the limit and 8,192
+  truncated 28 of 64 pilot answers). GPT-6-Luna through the Codex CLI signed in with a ChatGPT plan: Codex adds
+  its own agent instructions (about 20k input tokens per call) and does not expose temperature; web search, apps
+  and browser were disabled (a first test with web search on looked up a paper), the sandbox was read-only, user
+  configuration ignored (`src/llm.py`).
+- The consistency check fixes a measured input that a correction removes from the network as unconstrained.
+- As in Stage 2, the networks are published and may have been seen in training.
+
 ## Limitations
 
 - **Known benchmark bias.** All corruptions keep the set of regulators, so "keep the regulators" is
@@ -159,6 +203,11 @@ echo "GEMINI_API_KEY=..." > .env             # never committed
 # Stage 3a
 .venv/bin/python scripts/stage1_ambiguity.py --ids 3 10 21 63 99 100 104 174 177 182 185 208 212 237 278 --trials 20 --states 2 4 --coverage 0.7 0.5 0.3 --kinds del_reg add_reg --tasks-dir data/tasks_reg --workers 8 --out results/stage1_regcorrupt
 .venv/bin/python scripts/stage3a_compare.py
+# Stage 3b (Gemini key in .env; DeepSeek key as DEEPSEEK_API_KEY; Codex CLI signed in with a ChatGPT plan)
+.venv/bin/python scripts/stage3b_run.py --spec gemini:gemini-3.8-flash --sets reg orig --sample 150
+.venv/bin/python scripts/stage3b_run.py --spec deepseek:deepseek-flash --same-tasks-as gemini:gemini-3.8-flash
+.venv/bin/python scripts/stage3b_run.py --spec codex:gpt-6-luna --same-tasks-as gemini:gemini-3.8-flash --threads 2
+.venv/bin/python scripts/stage3b_analyze.py
 ```
 
 Every model call (prompt, reply, token counts) is logged locally to `runs/llm_log.jsonl`.

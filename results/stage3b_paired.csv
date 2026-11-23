@@ -1,0 +1,33 @@
+group,contrast,tasks,diff,ci
+added regulator,Gemini 3.8 Flash (API): named - anonymous,77,0.39,0.25-0.53
+added regulator,Gemini 3.8 Flash (API) named - truth among solver repairs,77,0.753,0.66-0.84
+added regulator,DeepSeek V4.1 Flash (API): named - anonymous,77,0.273,0.16-0.39
+added regulator,DeepSeek V4.1 Flash (API) named - truth among solver repairs,77,0.377,0.26-0.48
+added regulator,GPT-6-Luna (Codex CLI): named - anonymous,77,0.104,-0.06-0.26
+added regulator,GPT-6-Luna (Codex CLI) named - truth among solver repairs,77,0.39,0.29-0.51
+added regulator,Gemini named - DeepSeek V4.1 Flash (API) named,77,0.377,0.26-0.49
+added regulator,Gemini named - GPT-6-Luna (Codex CLI) named,77,0.364,0.21-0.52
+removed regulator,Gemini 3.8 Flash (API): named - anonymous,25,0.32,0.12-0.52
+removed regulator,Gemini 3.8 Flash (API) named - truth among solver repairs,25,0.16,-0.04-0.36
+removed regulator,DeepSeek V4.1 Flash (API): named - anonymous,25,0.32,0.16-0.52
+removed regulator,DeepSeek V4.1 Flash (API) named - truth among solver repairs,25,0.16,-0.04-0.36
+removed regulator,GPT-6-Luna (Codex CLI): named - anonymous,25,0.12,0.00-0.24
+removed regulator,GPT-6-Luna (Codex CLI) named - truth among solver repairs,25,-0.08,-0.28-0.12
+removed regulator,Gemini named - DeepSeek V4.1 Flash (API) named,25,0.0,-0.16-0.20
+removed regulator,Gemini named - GPT-6-Luna (Codex CLI) named,25,0.24,0.08-0.40
+original (sign / AND-OR),Gemini 3.8 Flash (API): named - anonymous,10,0.2,0.00-0.50
+original (sign / AND-OR),Gemini 3.8 Flash (API) named - truth among solver repairs,10,0.0,0.00-0.00
+original (sign / AND-OR),DeepSeek V4.1 Flash (API): named - anonymous,10,-0.1,-0.30-0.00
+original (sign / AND-OR),DeepSeek V4.1 Flash (API) named - truth among solver repairs,10,-0.2,-0.50-0.00
+original (sign / AND-OR),GPT-6-Luna (Codex CLI): named - anonymous,10,-0.1,-0.50-0.30
+original (sign / AND-OR),GPT-6-Luna (Codex CLI) named - truth among solver repairs,10,-0.7,-1.00--0.40
+original (sign / AND-OR),Gemini named - DeepSeek V4.1 Flash (API) named,10,0.2,0.00-0.50
+original (sign / AND-OR),Gemini named - GPT-6-Luna (Codex CLI) named,10,0.7,0.40-0.90
+all,Gemini 3.8 Flash (API): named - anonymous,112,0.357,0.24-0.47
+all,Gemini 3.8 Flash (API) named - truth among solver repairs,112,0.554,0.45-0.65
+all,DeepSeek V4.1 Flash (API): named - anonymous,112,0.25,0.16-0.35
+all,DeepSeek V4.1 Flash (API) named - truth among solver repairs,112,0.277,0.18-0.38
+all,GPT-6-Luna (Codex CLI): named - anonymous,112,0.089,-0.04-0.22
+all,GPT-6-Luna (Codex CLI) named - truth among solver repairs,112,0.188,0.08-0.29
+all,Gemini named - DeepSeek V4.1 Flash (API) named,112,0.277,0.18-0.38
+all,Gemini named - GPT-6-Luna (Codex CLI) named,112,0.366,0.25-0.48
