@@ -158,6 +158,26 @@ Accuracy = the final answer reproduces the true network exactly; 95% bootstrap C
   in 40-74% of tasks, against 88-100% for the other two), and it left the corrupted rule untouched in 36-43%.
 - Removed regulators remain hard (at most 0.36), and the 10 original tasks are too few for a conclusion.
 
+**One model on all tasks: GPT-6-Luna (Codex CLI)** (`scripts/stage3b_luna_full.py`,
+`results/stage3b_luna_full.csv`). Every solved Stage 3a task (314 added, 103 removed regulator) and 151 sampled
+original Stage 2 tasks, both name conditions; "checked" accuracy. Kept apart from the paired table above.
+
+| Tasks | Truth among solver's minimal repairs | GPT-6-Luna named | anonymous |
+| --- | --- | --- | --- |
+| Added regulator (314) | 0.01 | 0.44 (0.39-0.50) | 0.34 (0.29-0.39) |
+| Removed regulator (103) | 0.32 | 0.11 (0.05-0.17) | 0.04 (0.01-0.08) |
+| Original (151) | 1.00 | 0.36 (0.28-0.44) | 0.29 (0.21-0.36) |
+
+- On added regulators the model beats the solver's ceiling by +0.43 (0.37-0.48), as on the 112 paired tasks.
+- On removed regulators it is **below** the solver's ceiling (-0.21, -0.31 to -0.12), and on the original
+  tasks, where the truth is always among the solver's repairs, repairing alone (0.36) is far below picking from
+  the solver's list (Gemini, Stage 2: 0.84). Free repair is not a replacement for the solver; it helps where the
+  minimal-change principle is blind.
+- Real minus anonymous names over 568 tasks: +0.09 (0.04-0.14), smaller than for Gemini and DeepSeek above.
+- Repeatability: 143 (task, condition) pairs were answered twice after a restart; the outcome (right or wrong)
+  agreed in 99 (69%), with 42 vs 48 correct (`results/stage3b_luna_repeat.csv`). Codex runs are noticeably
+  non-deterministic, so single-answer accuracies carry this extra noise.
+
 **Limits of Stage 3b (read before using these numbers).**
 - Only 112 tasks: the Gemini run stopped when the paid API credit ran out (HTTP 402); the other models were run
   on exactly the tasks Gemini finished. The 10 original tasks are the pilot sample. One answer chain per task.

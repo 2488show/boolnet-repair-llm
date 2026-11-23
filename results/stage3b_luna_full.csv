@@ -1,0 +1,15 @@
+group,condition,tasks,truth_among_solver_repairs,alone,alone_ci,checked,checked_ci,checked_consistent
+added regulator,anonymous,314,0.013,0.178,0.14-0.22,0.341,0.29-0.39,0.688
+added regulator,named,314,0.013,0.277,0.23-0.33,0.439,0.39-0.50,0.717
+original (sign / AND-OR),anonymous,151,1.0,0.166,0.11-0.23,0.285,0.21-0.36,0.662
+original (sign / AND-OR),named,151,1.0,0.212,0.15-0.28,0.358,0.28-0.44,0.636
+removed regulator,anonymous,103,0.32,0.019,0.00-0.05,0.039,0.01-0.08,0.563
+removed regulator,named,103,0.32,0.049,0.01-0.10,0.107,0.05-0.17,0.631
+added regulator,named - anonymous (paired),314,,,,0.099,0.02-0.17,
+added regulator,named - truth among solver repairs,314,,,,0.427,0.37-0.48,
+removed regulator,named - anonymous (paired),103,,,,0.068,0.01-0.14,
+removed regulator,named - truth among solver repairs,103,,,,-0.214,-0.31--0.12,
+original (sign / AND-OR),named - anonymous (paired),151,,,,0.073,-0.02-0.16,
+original (sign / AND-OR),named - truth among solver repairs,151,,,,-0.642,-0.72--0.56,
+all,named - anonymous (paired),568,,,,0.086,0.04-0.14,
+all,named - truth among solver repairs,568,,,,0.026,-0.03-0.08,
