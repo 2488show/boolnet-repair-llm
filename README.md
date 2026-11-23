@@ -6,7 +6,7 @@ and the solver has no reason to prefer one. A biologist would choose using what 
 molecules involved. **This project tests whether a large language model can make that choice, and
 whether it does so because of biological knowledge or because of something else.**
 
-Status: **stages 0–2 complete** (benchmark, solver pipeline, language-model choosers). Stage 3 (models
+Status: **stages 0–2 complete, stage 3a in progress** (benchmark, solver pipeline, language-model choosers). Stage 3 (models
 written from scratch, then repaired) is planned.
 
 ## Key results
@@ -96,13 +96,44 @@ only the labels change.
 
 ![Ambiguity](figures/stage1_ambiguity.png)
 
+## Stage 3a (in progress): errors that add or remove a regulator
+
+The Stage 1–2 benchmark only flips signs or swaps AND/OR, which favours "keep the regulators".
+Two new corruptions address that bias: **del_reg** fixes one regulator of a rule to a constant (the
+rule no longer depends on it) and **add_reg** joins a spurious signed regulator by AND or OR. Both keep
+rules monotone and never remove a variable from the network; the default corruptions are unchanged
+byte for byte. Stage 1 was rerun on the same 15 networks and data levels (2 or 4 steady states;
+70/50/30% measured; 20 seeds each; `results/stage1_regcorrupt_*.csv`), compared with the original
+corruptions at the same levels (`scripts/stage3a_compare.py`, `results/stage3a_corruption_comparison.csv`):
+
+| Corruption | Trials | Undetected by the data | Solved | True network among the minimal repairs (solved) | Usable Stage 2 tasks |
+| --- | --- | --- | --- | --- | --- |
+| Flip a sign (original) | 2,548 | 36% | 1,467 | 52% | 305 |
+| AND ↔ OR (original) | 1,532 | 60% | 510 | 54% | 107 |
+| **Remove a regulator** | 693 | 83% | 103 | **32%** | 33 |
+| **Add a spurious regulator** | 1,107 | 66% | 314 | **1%** (4 of 314) | 4 |
+
+- **pyModRev's minimal repairs almost never undo an added regulator.** In 310 of 314 solved tasks the
+  true network is not among the minimal repairs, so no chooser, language model or not, can pick it.
+  The solver finds cheaper fixes that fit the data while keeping the spurious edge. Removed regulators
+  are restored somewhat more often (32%), still below the original corruptions (52–54%).
+- **The data rarely reveal these errors.** 66–83% of the corrupted models still fit the observed
+  steady states, compared with 36–60% for the original corruptions.
+- **Consequence for the design.** Only 37 tasks (4 + 33) meet the Stage 2 criteria (2–30 repairs, truth
+  among them), too few for a separate comparison. Repairs of this kind need a method that is not
+  restricted to the solver's minimal repairs, which is what Stage 3b (the language model edits rules
+  itself, the solver only checks them) will test.
+- Not yet done: the reason behind the 1% (which repair costs pyModRev prefers) is not analysed; one
+  error per task; the Stage 2 choosers have not been run on these tasks.
+
 ## Limitations
 
 - **Known benchmark bias.** All corruptions keep the set of regulators, so "keep the regulators" is
   favoured by construction. This is why it is the strongest knowledge-free rule and why anonymous
   Gemini beats random. The comparison that matters is real names versus this rule and versus
-  anonymous names, which both can exploit. Corruptions that add or remove a regulation are the next
-  addition.
+  anonymous names, which both can exploit. Corruptions that add or remove a regulation were added in
+  Stage 3a; the solver rarely recovers the truth for them (see above), so they do not yet give a
+  bias-free Stage 2 test.
 - **Recall or reasoning?** The networks are published, and the model may have seen them. Real-name
   accuracy shows that biological knowledge is used, not whether it is general knowledge or memory of a
   specific paper. Networks published after the model's training cut-off would separate the two.
@@ -125,6 +156,9 @@ echo "GEMINI_API_KEY=..." > .env             # never committed
 .venv/bin/python -m mlx_lm server --model mlx-community/Qwen3-8B-4bit --port 8080 &
 .venv/bin/python scripts/stage2_run.py --levels 2:0.7 2:0.5 2:0.3 4:0.7 4:0.5 4:0.3 --llm gemini:gemini-3.8-flash local:mlx-community/Qwen3-8B-4bit
 .venv/bin/python scripts/analyze.py
+# Stage 3a
+.venv/bin/python scripts/stage1_ambiguity.py --ids 3 10 21 63 99 100 104 174 177 182 185 208 212 237 278 --trials 20 --states 2 4 --coverage 0.7 0.5 0.3 --kinds del_reg add_reg --tasks-dir data/tasks_reg --workers 8 --out results/stage1_regcorrupt
+.venv/bin/python scripts/stage3a_compare.py
 ```
 
 Every model call (prompt, reply, token counts) is logged locally to `runs/llm_log.jsonl`.

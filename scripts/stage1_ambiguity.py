@@ -24,7 +24,7 @@ import bnet  # noqa: E402
 TASKS = pathlib.Path("data/tasks")
 
 
-def run_trial(nid, folder, n_states, cov, seed, n_errors, kinds=("flip", "and_or"), tasks_dir="data/tasks"):
+def _run_trial(nid, folder, n_states, cov, seed, n_errors, kinds=("flip", "and_or"), tasks_dir="data/tasks"):
     truth = bnet.read_bnet(f"vendor/bbm/models/{folder}/model.bnet")
     names = bnet.variables(truth)
     fps = bnet.fixed_points(truth)
@@ -50,6 +50,16 @@ def run_trial(nid, folder, n_states, cov, seed, n_errors, kinds=("flip", "and_or
             corruption=log, observations=obs, observed_states=chosen, corrupted=bad,
             candidates=cands, correct=ok)))
     return row
+
+
+def run_trial(*args):
+    """One trial; an unexpected error is recorded as a status instead of stopping the whole run."""
+    try:
+        return _run_trial(*args)
+    except Exception as e:  # noqa: BLE001
+        nid, _, n_states, cov, seed = args[:5]
+        return dict(network=nid, n_states=n_states, coverage=cov, seed=seed,
+                    status=f"error:{type(e).__name__}:{str(e)[:80]}", n_candidates=0)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ Task = (true network, a corrupted copy, a set of partial steady-state observatio
 pyModRev returns every minimal repair of the corrupted model that fits the observations; each one
 is a candidate model. Scoring compares candidates with the truth, rule by rule.
 """
+import functools
 import itertools
 import pathlib
 import random
@@ -33,6 +34,7 @@ def and_or_swap(expr):
     return None
 
 
+@functools.lru_cache(maxsize=None)
 def drop_regulator(expr, reg, value):
     """Fix `reg` to a constant, so the rule no longer depends on it, and write the result without
     constants as a monotone sum of products over the remaining regulators (stays monotone)."""
@@ -58,6 +60,11 @@ def drop_regulator(expr, reg, value):
     return "(" + " | ".join(terms) + ")"
 
 
+@functools.lru_cache(maxsize=None)
+def _same(e1, e2):
+    return bnet.same_function(e1, e2)
+
+
 def add_regulator(expr, new, positive, use_and):
     """Combine the rule with one extra signed regulator by AND or OR (stays monotone)."""
     lit = new if positive else f"!{new}"
@@ -73,28 +80,52 @@ def corrupt(net, rng, n_errors=1, kinds=("flip", "and_or")):
     net = dict(net)
     log = []
     all_vars = bnet.variables(net)
-    targets = [t for t, e in net.items() if bnet.regulators(e)]
-    for t in rng.sample(targets, k=min(n_errors, len(targets))):
+
+    def deletions(t):
+        """Valid (regulator, fixed value) deletions for rule t. A regulator that occurs nowhere else
+        and has no rule of its own is skipped: deleting it would remove the variable from the network."""
+        if "del_reg" not in kinds:
+            return []
+        regs = bnet.regulators(net[t])
+        if len(regs) < 2:
+            return []
+        def elsewhere(x):
+            return x in net or any(x in bnet.regulators(e) for u, e in net.items() if u != t)
+
+        out = []
+        for r in regs:
+            for v in (0, 1):
+                new = drop_regulator(net[t], r, v)
+                if new is None or _same(new, net[t]):
+                    continue
+                # every regulator that the new rule no longer uses must still exist in the network
+                lost = set(regs) - set(bnet.regulators(new))
+                if all(elsewhere(x) for x in lost):
+                    out.append((r, v, new))
+        return out
+
+    def kinds_for(t):
         regs = bnet.regulators(net[t])
         avail = ["flip"] * ("flip" in kinds) + (["and_or"] if len(regs) >= 2 and "and_or" in kinds else [])
-        if "del_reg" in kinds and len(regs) >= 2:
+        if deletions(t):
             avail.append("del_reg")
-        extra = [v for v in all_vars if v != t and v not in regs]
-        if "add_reg" in kinds and extra:
+        if "add_reg" in kinds and [v for v in all_vars if v != t and v not in regs]:
             avail.append("add_reg")
+        return avail
+
+    # targets that can take at least one error of the allowed kinds (with the default kinds this is
+    # every target with a regulator, in the same order, so earlier benchmarks are unchanged)
+    targets = [t for t, e in net.items() if bnet.regulators(e) and kinds_for(t)]
+    for t in rng.sample(targets, k=min(n_errors, len(targets))):
+        regs = bnet.regulators(net[t])
+        avail = kinds_for(t)
         kind = rng.choice(avail)
         if kind == "del_reg":
-            r = rng.choice(regs)
-            v = rng.choice([0, 1])
-            new = drop_regulator(net[t], r, v)
-            if new is None or bnet.same_function(new, net[t]):
-                new = drop_regulator(net[t], r, 1 - v)
-            if new is None or bnet.same_function(new, net[t]):
-                continue  # no usable deletion for this rule
+            r, v, new = rng.choice(deletions(t))
             net[t] = new
             log.append((t, "del_reg", r))
         elif kind == "add_reg":
-            x = rng.choice(extra)
+            x = rng.choice([v for v in all_vars if v != t and v not in regs])
             net[t] = add_regulator(net[t], x, rng.random() < 0.5, rng.random() < 0.5)
             log.append((t, "add_reg", x))
         elif kind == "flip":
