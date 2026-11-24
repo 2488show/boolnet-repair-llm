@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this benchmark or code, please cite it as below."
+title: "Can a language model pick, or make, the right repair? Knowledge-guided revision of Boolean network models"
+authors:
+  - family-names: Saimaiti
+    given-names: Mamutijiang
+version: 0.3.0
+date-released: 2026-11-24
+license: MIT
+repository-code: "https://github.com/2488show/boolnet-repair-llm"
+keywords:
+  - Boolean networks
+  - model revision
+  - answer set programming
+  - large language models
+  - systems biology
