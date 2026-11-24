@@ -190,6 +190,57 @@ original Stage 2 tasks, both name conditions; "checked" accuracy. Kept apart fro
 - The consistency check fixes a measured input that a correction removes from the network as unconstrained.
 - As in Stage 2, the networks are published and may have been seen in training.
 
+## Stage 3 checks: same-model comparison, a database baseline, counterfactual networks (in progress)
+
+**GPT-6-Luna as a Stage 2 chooser** (412 tasks, `scripts/stage2_luna.py`, `results/stage2_luna.csv`). Picking
+among the solver's repairs: real names 0.51 (0.46-0.56), anonymous 0.27 (6.6% of anonymous answers could not be
+read and count as wrong), shuffled 0.39. Real minus anonymous +0.25 (0.18-0.31), but real names are only level
+with the best knowledge-free rule (+0.02, -0.04 to 0.09) and 0.33 below Gemini.
+
+**Picking vs repairing within one model** (`results/stage3b_pick_vs_repair_luna.csv`). On the 151 original tasks
+that ran in both stages, GPT-6-Luna picking from the solver's list scores 0.53 with real names; repairing by
+itself scores 0.36 after checking, -0.17 (-0.28 to -0.06). The earlier conclusion (free repair complements the
+solver rather than replacing it) therefore also holds inside one model, not only across models.
+
+**A knowledge base without a language model** (`scripts/stage2_db_baseline.py`, `results/stage2_db_baseline.csv`).
+Candidates are scored against OmniPath's directed, signed interactions (human and mouse): +1 for each regulator
+OmniPath supports with the same sign, -1 for an opposite sign, -1 for each OmniPath edge into the node that the
+rule leaves out; ties are broken uniformly (exact expected accuracy).
+
+| Tasks | n | OmniPath pick | Keep regulators | Gemini named | Gemini anonymous |
+| --- | --- | --- | --- | --- | --- |
+| All | 412 | 0.49 | 0.49 | 0.84 | 0.53 |
+| Mammalian networks | 279 | 0.56 | 0.49 | 0.84 | 0.54 |
+| OmniPath separates the candidates | 119 | **0.79** | 0.61 | **0.84** | 0.50 |
+
+- **Where a curated database has the facts, it does about as well as Gemini**: on the 119 tasks OmniPath can
+  decide, Gemini minus OmniPath is +0.05 (-0.05 to 0.15). Gemini's overall lead (+0.35, 0.31-0.40) comes mostly
+  from coverage: OmniPath has nothing for the Drosophila, yeast, E. coli and lac-operon networks and maps only part
+  of the mammalian ones. The covered tasks are concentrated in three networks (AML 65, hematopoiesis ageing 30,
+  myeloid progenitors 15).
+- Caveats: the variable-to-gene mapping (`ALIAS` in the script) was written by hand; the chicken network is mapped
+  through human orthologs; OmniPath may contain the very papers these models were built from, so it shares the
+  "known from the literature" advantage with the language model.
+
+**Counterfactual networks** (`scripts/stage3c_counterfactual_build.py`, `scripts/stage3c_counterfactual_analyze.py`,
+`results/stage3c_counterfactual.csv`). For 200 added-regulator tasks the truth is changed: one regulator in the
+rule of another node u has its sign flipped, the measurements are regenerated from this counterfactual network,
+and the same error as before is put into the target rule. Restoring u to its published rule is never needed by the
+data. GPT-6-Luna, both name conditions:
+
+| | Real names | Anonymous |
+| --- | --- | --- |
+| Correct (counterfactual truth recovered) | 0.45 (0.38-0.52) | 0.34 (0.28-0.41) |
+| First answer changed u at all | 0.065 | 0.07 |
+| First answer put u back to the published rule | 0.03 (0.01-0.06) | 0.015 (0.00-0.04) |
+| Same model on the original task, correct | 0.475 | 0.36 |
+
+- GPT-6-Luna almost never overrides the given model with the published rule (real minus anonymous names +0.015,
+  -0.01 to 0.04), and accuracy on counterfactual tasks is close to the original tasks. This does **not** settle
+  the memory question: GPT-6-Luna shows a weak name effect in the first place (Stage 3b), so the test is weak with
+  this model; it should be repeated with Gemini. A revert would also not separate memory of the specific paper
+  from general knowledge, since both point to the published sign.
+
 ## Limitations
 
 - **Known benchmark bias.** All corruptions keep the set of regulators, so "keep the regulators" is
@@ -228,6 +279,13 @@ echo "GEMINI_API_KEY=..." > .env             # never committed
 .venv/bin/python scripts/stage3b_run.py --spec deepseek:deepseek-flash --same-tasks-as gemini:gemini-3.8-flash
 .venv/bin/python scripts/stage3b_run.py --spec codex:gpt-6-luna --same-tasks-as gemini:gemini-3.8-flash --threads 2
 .venv/bin/python scripts/stage3b_analyze.py
+.venv/bin/python scripts/stage2_run.py --levels 2:0.7 2:0.5 2:0.3 4:0.7 4:0.5 4:0.3 --llm codex:gpt-6-luna --threads 6
+.venv/bin/python scripts/stage2_luna.py
+curl -o data/omnipath/interactions.tsv "https://omnipathdb.org/interactions?genesymbols=yes&fields=curation_effort,sources&organisms=9606,10090&datasets=omnipath,tf_target,kinaseextra,pathwayextra"
+.venv/bin/python scripts/stage2_db_baseline.py
+.venv/bin/python scripts/stage3c_counterfactual_build.py --n 200
+.venv/bin/python scripts/stage3b_run.py --spec codex:gpt-6-luna --sets cf --threads 4
+.venv/bin/python scripts/stage3c_counterfactual_analyze.py
 ```
 
 Every model call (prompt, reply, token counts) is logged locally to `runs/llm_log.jsonl`.

@@ -1,0 +1,13 @@
+item,tasks,value,ci
+codex:gpt-6-luna|named,412,0.51,0.46-0.56
+codex:gpt-6-luna|anonymous,412,0.265,0.22-0.31
+codex:gpt-6-luna|shuffled,412,0.386,0.34-0.43
+gemini:gemini-3.8-flash|named,412,0.84,0.80-0.88
+keep_regulation,412,0.488,0.44-0.54
+codex:gpt-6-luna|named - codex:gpt-6-luna|anonymous,412,0.245,0.18-0.31
+codex:gpt-6-luna|shuffled - codex:gpt-6-luna|anonymous,412,0.121,0.07-0.18
+codex:gpt-6-luna|named - keep_regulation,412,0.022,-0.04-0.09
+gemini:gemini-3.8-flash|named - codex:gpt-6-luna|named,412,0.33,0.28-0.38
+codex:gpt-6-luna|anonymous: share of answers parsed,412,0.934,
+codex:gpt-6-luna|named: share of answers parsed,412,1.0,
+codex:gpt-6-luna|shuffled: share of answers parsed,412,1.0,

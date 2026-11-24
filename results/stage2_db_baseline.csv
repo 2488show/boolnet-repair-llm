@@ -1,0 +1,4 @@
+subset,tasks,db_acc,chance,keep_regulation,gemini:gemini-3.8-flash|named,gemini:gemini-3.8-flash|anonymous,codex:gpt-6-luna|named,gemini_named_minus_db,gemini_named_minus_db_ci,db_minus_keep_regulation,db_minus_keep_regulation_ci
+all tasks,412,0.489,0.351,0.488,0.84,0.527,0.51,0.35,0.31-0.40,0.002,-0.05-0.05
+mammalian networks,279,0.559,0.356,0.491,0.842,0.541,0.577,0.283,0.22-0.34,0.068,0.01-0.12
+covered by OmniPath,119,0.787,0.31,0.613,0.84,0.504,0.555,0.053,-0.05-0.15,0.174,0.08-0.27

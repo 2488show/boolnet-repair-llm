@@ -1,0 +1,5 @@
+condition,repair,tasks,pick,repair_acc,diff,ci
+named,alone_correct,151,0.53,0.212,-0.318,-0.42--0.21
+named,checked_correct,151,0.53,0.358,-0.172,-0.28--0.06
+anonymous,alone_correct,151,0.285,0.166,-0.119,-0.22--0.02
+anonymous,checked_correct,151,0.285,0.285,0.0,-0.11-0.11

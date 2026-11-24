@@ -108,7 +108,7 @@ if __name__ == "__main__":
             print("error", t["task_id"], method, type(e).__name__, str(e)[:120], flush=True)
 
     for spec in args.llm:
-        threads = args.threads if spec.startswith("gemini") else 1  # one local model server
+        threads = 1 if spec.startswith("local") else args.threads  # one local model server
         jobs = [(t, spec, c) for t in tasks for c in args.conditions]
         with ThreadPoolExecutor(threads) as ex:
             for n, _ in enumerate(ex.map(lambda j: ask(*j), jobs), 1):
