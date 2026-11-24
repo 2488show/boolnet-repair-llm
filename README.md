@@ -174,9 +174,12 @@ original Stage 2 tasks, both name conditions; "checked" accuracy. Kept apart fro
   the solver's list (Gemini, Stage 2: 0.84). Free repair is not a replacement for the solver; it helps where the
   minimal-change principle is blind.
 - Real minus anonymous names over 568 tasks: +0.09 (0.04-0.14), smaller than for Gemini and DeepSeek above.
-- Repeatability: 143 (task, condition) pairs were answered twice after a restart; the outcome (right or wrong)
-  agreed in 99 (69%), with 42 vs 48 correct (`results/stage3b_luna_repeat.csv`). Codex runs are noticeably
-  non-deterministic, so single-answer accuracies carry this extra noise.
+- Repeatability: every job was answered three times (`scripts/stage3b_luna_reps.py`,
+  `results/stage3b_luna_reps.csv`). Group accuracies move little between repeats (added regulator, real names:
+  0.44, 0.48, 0.45; mean of three 0.45, 0.42-0.49), but single tasks do: on added-regulator tasks with real names
+  the three answers agree on only 36% of tasks (14% always right, 23% always wrong). On the per-task mean of three,
+  the conclusions hold: added regulator +0.44 (0.40-0.48) over the solver's ceiling, removed regulator -0.22
+  (-0.31 to -0.13); real minus anonymous names +0.09 (0.06-0.13) over 567 tasks, now separable from zero.
 
 **Limits of Stage 3b (read before using these numbers).**
 - Only 112 tasks: the Gemini run stopped when the paid API credit ran out (HTTP 402); the other models were run

@@ -1,0 +1,15 @@
+group,condition,tasks,rep1,rep2,rep3,mean_of_3,mean_ci,all_right,all_wrong,mixed
+added regulator,anonymous,314,0.341,0.309,0.366,0.339,0.30-0.38,0.089,0.385,0.525
+added regulator,named,314,0.439,0.475,0.446,0.453,0.42-0.49,0.137,0.226,0.637
+original (sign / AND-OR),anonymous,150,0.287,0.32,0.36,0.322,0.27-0.38,0.087,0.413,0.5
+original (sign / AND-OR),named,150,0.353,0.413,0.42,0.396,0.34-0.46,0.147,0.387,0.467
+removed regulator,anonymous,103,0.039,0.039,0.049,0.042,0.02-0.07,0.0,0.913,0.087
+removed regulator,named,103,0.107,0.078,0.126,0.104,0.06-0.15,0.01,0.777,0.214
+added regulator,"named - anonymous (mean of 3, paired)",314,,,,0.115,0.07-0.16,,,
+added regulator,named - truth among solver repairs,314,,,,0.441,0.40-0.48,,,
+removed regulator,"named - anonymous (mean of 3, paired)",103,,,,0.061,0.02-0.11,,,
+removed regulator,named - truth among solver repairs,103,,,,-0.217,-0.31--0.13,,,
+original (sign / AND-OR),"named - anonymous (mean of 3, paired)",150,,,,0.073,0.01-0.13,,,
+original (sign / AND-OR),named - truth among solver repairs,150,,,,-0.604,-0.66--0.54,,,
+all,"named - anonymous (mean of 3, paired)",567,,,,0.094,0.06-0.13,,,
+all,named - truth among solver repairs,567,,,,0.045,-0.00-0.10,,,
